@@ -7,38 +7,60 @@ int conta_a_validar;
 int senha_a_validar;
 int tentativas = 3;
 
+
 void bemvindo(){
     printf("\nBem vindo ao Banco Monaco!\n\n");
 }
 
-void entrar(){
+int login(int* logado){
 
-    sleep(1);
+    do{
+        sleep(1);
 
-    printf("Número da Conta: ");
-    scanf("%d", &conta_a_validar);
+        printf("Número da Conta: ");
+        scanf("%d", &conta_a_validar);
 
-    sleep(1);
+        sleep(1);
 
-    printf("Senha: ");
-    scanf("%d", &senha_a_validar);
+        printf("Senha: ");
+        scanf("%d", &senha_a_validar);
 
-    printf("\nValidando...\n");
-    sleep(2);
+        printf("\nValidando...\n");
+        sleep(2);
+    } while(!entrou(logado) && !bloqueado());
+    
+    
 }
 
-void entrada(){
+int bloqueado(){
+    return tentativas == 0 ? 1 : 0;
+}
+
+int entrou(int* logado){
     
-    printf("Acesso permitido.\n");
+    if(validou()){
+        printf("Acesso permitido.\n");
 
-    sleep(1);
+        sleep(1);
 
-    printf("Entrando...\n\n");
+        printf("Entrando...\n\n");
 
-    sleep(3);
+        sleep(3);
 
-    printf("Olá! Bem vindo à sua conta!\n");
-    exit(1);
+        *logado = 1;
+        return 1;
+
+    }
+
+    tentativas--;
+
+    if(bloqueado()){
+        printf("Acesso Bloqueado. Você tentou demais.\n");
+        return 0;
+    }
+
+    printf("Conta Inválida. Você tem mais %d tentativas.\n\n", tentativas);
+    return 0;
 }
 
 int validou(){
@@ -48,6 +70,7 @@ int validou(){
 
     if(arquivo_conta == 0 || arquivo_senha == 0 ){
         printf("Erro no sistema. Saindo...\n");
+        sleep(2);
         exit(1);
     }
 
@@ -60,6 +83,10 @@ int validou(){
         fscanf(arquivo_senha, "%d", &senha);
 
         if (senha_a_validar == senha){
+            
+            fclose(arquivo_conta);
+            fclose(arquivo_senha);
+
             return 1;
         }
     }
@@ -68,15 +95,4 @@ int validou(){
     fclose(arquivo_senha);
     
     return 0;
-}
-
-void acesso_negado(int bloqueado){
-    tentativas--;
-    
-    if(tentativas == 0){
-        printf("Acesso Bloqueado. Você tentou demais.\n");
-        exit(1);
-    }
-
-    printf("Acesso negado! Você digitou algo errado. Você tem mais %d tentativas. Depois disso, seu acesso será bloqueado.\n\n", tentativas);
 }
