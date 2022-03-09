@@ -1,5 +1,6 @@
-void entrar();
-int validou();
-void entrada();
-void acesso_negado();
 void bemvindo();
+int login(int* logado);
+int entrou(int* logado);
+int validou();
+int bloqueado();
+
